@@ -1,0 +1,28 @@
+services:
+  livekit:
+    image: livekit/livekit-server:v1.9
+    command: --config /etc/livekit.yaml --node-ip ${LIVEKIT_NODE_IP:-82.157.174.249}
+    restart: unless-stopped
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:-devkey}: ${LIVEKIT_API_SECRET:-local-livekit-secret-please-change-32chars}"
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+
+  backend:
+    build:
+      context: .
+    restart: unless-stopped
+    depends_on:
+      - livekit
+    environment:
+      PORT: ${PORT:-8787}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-local-livekit-secret-please-change-32chars}
+      LIVEKIT_URL: ${LIVEKIT_URL:-ws://livekit:7880}
+      LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:-ws://82.157.174.249:7880}
+    ports:
+      - "8787:8787"

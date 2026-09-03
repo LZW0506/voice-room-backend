@@ -1,0 +1,18 @@
+{
+    default_sni 10.126.126.1
+}
+
+https://10.126.126.1:1443 {
+    tls internal
+    encode gzip
+
+    @api {
+        path /api/* /health
+    }
+    reverse_proxy @api host.docker.internal:8787
+
+    @livekit path /rtc*
+    reverse_proxy @livekit livekit:7880
+
+    reverse_proxy host.docker.internal:1420
+}

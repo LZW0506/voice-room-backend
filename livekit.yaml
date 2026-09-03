@@ -1,0 +1,18 @@
+port: 7880
+
+rtc:
+  # 单机客户端使用固定 UDP 端口，后续多节点可切换为端口范围
+  udp_port: 7882
+  tcp_port: 7881
+  use_external_ip: false
+
+keys:
+  devkey: local-livekit-secret-please-change-32chars
+
+logging:
+  level: info
+
+room:
+  auto_create: true
+  empty_timeout: 300
+  departure_timeout: 20
